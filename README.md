@@ -37,7 +37,7 @@ https://youtu.be/SVtsT9WVujs
 
 ### Volume creation on demand
 
-This extension can create volumes on the remote cluster if you install https://github.com/aravindavk/glusterfs-rest in one of the nodes of the cluster.
+This extension can create volumes on the remote cluster if you install https://github.com/dangzhiqiang/glusterfs-rest in one of the nodes of the cluster.
 
 You need to set two extra flags when you start the extension if you want to let containers to create their volumes on demand:
 

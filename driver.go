@@ -10,8 +10,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/amarkwalder/docker-volume-glusterfs/rest"
 	"github.com/docker/go-plugins-helpers/volume"
-	"github.com/tcoupin/docker-volume-glusterfs/rest"
 )
 
 type volumeName struct {

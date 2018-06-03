@@ -10,8 +10,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/amarkwalder/docker-volume-glusterfs/rest"
 	"github.com/docker/go-plugins-helpers/volume"
+	"github.com/tcoupin/docker-volume-glusterfs/rest"
 )
 
 type volumeName struct {
@@ -23,7 +23,7 @@ type glusterfsDriver struct {
 	root       string
 	restClient *rest.Client
 	servers    []string
-	volumes    map[string]*volumeName
+	volumes    map[string]*volumeName // store only mounted volumes
 	m          *sync.Mutex
 }
 
@@ -57,12 +57,15 @@ func (d glusterfsDriver) Create(r *volume.CreateRequest) error {
 		}
 
 		if !exist {
+			// TODO custom options
 			if err := d.restClient.CreateVolume(r.Name, d.servers); err != nil {
 				return err
 			}
 		}
+		return nil
+	} else {
+		return errors.New("Creating Volume failed (no rest endpoint on glusterfs)")
 	}
-	return errors.New("Creating Volume failed")
 }
 
 func (d glusterfsDriver) Remove(r *volume.RemoveRequest) error {
@@ -71,17 +74,16 @@ func (d glusterfsDriver) Remove(r *volume.RemoveRequest) error {
 	defer d.m.Unlock()
 	m := d.mountpoint(r.Name)
 
-	if s, ok := d.volumes[m]; ok {
-		if s.connections <= 1 {
-			if d.restClient != nil {
-				if err := d.restClient.StopVolume(r.Name); err != nil {
-					return err
-				}
+	if _, ok := d.volumes[m]; !ok {
+		if d.restClient != nil {
+			if err := d.restClient.DeleteVolume(r.Name); err != nil {
+				return err
 			}
-			delete(d.volumes, m)
+			return nil
 		}
+		return errors.New("Removing volume failed (no rest endpoint on glusterfs)")
 	}
-	return errors.New("Removng volume failed")
+	return errors.New("Removing volume failed : volume in use")
 }
 
 func (d glusterfsDriver) Path(r *volume.PathRequest) (*volume.PathResponse, error) {
@@ -94,8 +96,7 @@ func (d glusterfsDriver) Mount(r *volume.MountRequest) (*volume.MountResponse, e
 	m := d.mountpoint(r.Name)
 	log.Printf("Mounting volume %s on %s\n", r.Name, m)
 
-	s, ok := d.volumes[m]
-	if ok && s.connections > 0 {
+	if s, ok := d.volumes[m]; ok {
 		s.connections++
 		return &volume.MountResponse{Mountpoint: m}, nil
 	}
@@ -130,12 +131,17 @@ func (d glusterfsDriver) Unmount(r *volume.UnmountRequest) error {
 	log.Printf("Unmounting volume %s from %s\n", r.Name, m)
 
 	if s, ok := d.volumes[m]; ok {
-		if s.connections == 1 {
+		s.connections--
+		if s.connections == 0 {
 			if err := d.unmountVolume(m); err != nil {
 				return err
 			}
+			if err := os.RemoveAll(m); err != nil {
+				return err
+			}
+			delete(d.volumes, m)
 		}
-		s.connections--
+
 	} else {
 		return errors.New(fmt.Sprintf("Unable to find volume mounted on %s", m))
 	}
@@ -151,6 +157,16 @@ func (d glusterfsDriver) Get(r *volume.GetRequest) (*volume.GetResponse, error) 
 		return &volume.GetResponse{Volume: &volume.Volume{Name: s.name, Mountpoint: d.mountpoint(s.name)}}, nil
 	}
 
+	if d.restClient != nil {
+		exist, err := d.restClient.VolumeExist(r.Name)
+		if err != nil {
+			return &volume.GetResponse{}, err
+		}
+		if exist {
+			return &volume.GetResponse{Volume: &volume.Volume{Name: r.Name}}, nil
+		}
+	}
+
 	return &volume.GetResponse{}, errors.New(fmt.Sprintf("Unable to find volume mounted on %s", m))
 }
 
@@ -158,8 +174,19 @@ func (d glusterfsDriver) List() (*volume.ListResponse, error) {
 	d.m.Lock()
 	defer d.m.Unlock()
 	var vols []*volume.Volume
-	for _, v := range d.volumes {
-		vols = append(vols, &volume.Volume{Name: v.name, Mountpoint: d.mountpoint(v.name)})
+
+	if d.restClient != nil {
+		respVolumes, err := d.restClient.Volumes()
+		if err != nil {
+			return &volume.ListResponse{}, err
+		}
+		for _, v := range respVolumes {
+			vols = append(vols, &volume.Volume{Name: v.Name})
+		}
+	} else {
+		for _, v := range d.volumes {
+			vols = append(vols, &volume.Volume{Name: v.name, Mountpoint: d.mountpoint(v.name)})
+		}
 	}
 	return &volume.ListResponse{Volumes: vols}, nil
 }
@@ -193,6 +220,6 @@ func (d *glusterfsDriver) unmountVolume(target string) error {
 
 func (d glusterfsDriver) Capabilities() *volume.CapabilitiesResponse {
 	var res volume.CapabilitiesResponse
-	res.Capabilities = volume.Capability{Scope: "local"}
+	res.Capabilities = volume.Capability{Scope: "global"}
 	return &res
 }

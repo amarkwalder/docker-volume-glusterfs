@@ -13,6 +13,7 @@ import (
 const (
 	volumesPath      = "/api/1.0/volumes"
 	volumeCreatePath = "/api/1.0/volume/%s"
+	volumeDeletePath = "/api/1.0/volume/%s"
 	volumeStopPath   = "/api/1.0/volume/%s/stop"
 )
 
@@ -62,7 +63,7 @@ func NewClient(addr, base string) *Client {
 
 // VolumeExist returns whether a volume exist in the cluster with a given name or not.
 func (r Client) VolumeExist(name string) (bool, error) {
-	vols, err := r.volumes()
+	vols, err := r.Volumes()
 	if err != nil {
 		return false, err
 	}
@@ -76,7 +77,7 @@ func (r Client) VolumeExist(name string) (bool, error) {
 	return false, nil
 }
 
-func (r Client) volumes() ([]volume, error) {
+func (r Client) Volumes() ([]volume, error) {
 	u := fmt.Sprintf("%s%s", r.addr, volumesPath)
 
 	res, err := http.Get(u)
@@ -129,6 +130,30 @@ func (r Client) StopVolume(name string) error {
 	if err != nil {
 		return err
 	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	return responseCheck(resp)
+}
+
+// DeleteVolume remove the volume with the given name in the cluster.
+func (r Client) DeleteVolume(name string) error {
+	u := fmt.Sprintf("%s%s", r.addr, fmt.Sprintf(volumeDeletePath, name))
+
+	params := url.Values{
+		"stop": {"true"},
+	}
+	body := strings.NewReader(params.Encode())
+
+	req, err := http.NewRequest("DELETE", u, body)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-type", "application/x-www-form-urlencoded")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

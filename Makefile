@@ -31,7 +31,7 @@ msg=@printf "\n\033[0;01m>>> %s\033[0m\n" $1
 
 build: guard-VERSION deps
 	$(call msg,"Build binary")
-	$(FLAGS_all) go build -ldflags "-X main.Version=${VERSION} -X main.Build=${BUILD}" -o docker-volume-glusterfs$(EXTENSION_$GOOS_$GOARCH) *.go
+	$(FLAGS_all) go build -ldflags "-X main.version=${VERSION} -X main.commit=${BUILD} -X main.date=`date +%FT%TZ`" -o docker-volume-glusterfs$(EXTENSION_$GOOS_$GOARCH) *.go
 	./docker-volume-glusterfs -version
 .PHONY: build
 
@@ -68,41 +68,49 @@ clean:
 	rm -rf dist
 .PHONY: clean
 
-build-all: deps guard-VERSION $(foreach PLATFORM,$(PLATFORMS),dist/$(PLATFORM)/.built)
-.PHONY: build-all
+dist-snapshot:
+	curl -sL https://git.io/goreleaser | bash -s -- --rm-dist --snapshot
+.PHONY: dist-snapshot
 
-dist: guard-VERSION build-all \
-$(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(VERSION)-$(PLATFORM).zip) \
-$(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(VERSION)-$(PLATFORM).tar.gz)
-.PHONY:	dist
+dist-release: guard-GITHUB_TOKEN
+	curl -sL https://git.io/goreleaser | bash -s -- --rm-dist
+.PHONY: dist-release
 
-release: guard-VERSION dist
+#build-all: deps guard-VERSION $(foreach PLATFORM,$(PLATFORMS),dist/$(PLATFORM)/.built)
+#.PHONY: build-all
+
+#dist: guard-VERSION build-all \
+#$(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(VERSION)-$(PLATFORM).zip) \
+#$(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(VERSION)-$(PLATFORM).tar.gz)
+#.PHONY:	dist
+
+release: guard-VERSION
 	$(call msg,"Create and push release")
 	git tag -a "v$(VERSION)" -m "Release $(VERSION)"
 	git push --tags
-.PHONY: tag-release
+.PHONY: release
 
 
 ################################################################################
 
-dist/%/.built:
-	$(call msg,"Build binary for $*")
-	rm -f $@
-	mkdir -p $(dir $@)
-	$(FLAGS_$*) go build -ldflags "-X main.Version=${VERSION} -X main.Build=${BUILD}" -o dist/$*/docker-volume-glusterfs$(EXTENSION_$*) $(wildcard ../*.go)
-	touch $@
+#dist/%/.built:
+#	$(call msg,"Build binary for $*")
+#	rm -f $@
+#	mkdir -p $(dir $@)
+#	$(FLAGS_$*) go build -ldflags "-X main.Version=${VERSION} -X main.Build=${BUILD}" -o dist/$*/docker-volume-glusterfs$(EXTENSION_$*) $(wildcard ../*.go)
+#	touch $@
 
-dist/docker-volume-glusterfs-$(VERSION)-%.zip:
-	$(call msg,"Create ZIP for $*")
-	rm -f $@
-	mkdir -p $(dir $@)
-	zip -j $@ dist/$*/* -x .built
+#dist/docker-volume-glusterfs-$(VERSION)-%.zip:
+#	$(call msg,"Create ZIP for $*")
+#	rm -f $@
+#	mkdir -p $(dir $@)
+#	zip -j $@ dist/$*/* -x .built
 
-dist/docker-volume-glusterfs-$(VERSION)-%.tar.gz:
-	$(call msg,"Create TAR for $*")
-	rm -f $@
-	mkdir -p $(dir $@)
-	tar czf $@ -C dist/$* --exclude=.built .
+#dist/docker-volume-glusterfs-$(VERSION)-%.tar.gz:
+#	$(call msg,"Create TAR for $*")
+#	rm -f $@
+#	mkdir -p $(dir $@)
+#	tar czf $@ -C dist/$* --exclude=.built .
 
 guard-%:
 	@ if [ "${${*}}" = "" ]; then \

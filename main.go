@@ -13,17 +13,18 @@ import (
 const glusterfsID = "_glusterfs"
 
 var (
-	Version string
-	Build   string
+	version	string
+	commit	string
+	date	string
 )
 
 var (
-	version     = flag.Bool("version", false, "Version of Docker Volumen GlusterFS")
-	defaultDir  = filepath.Join(volume.DefaultDockerRootDirectory, glusterfsID)
-	serversList = flag.String("servers", "", "List of glusterfs servers")
-	restAddress = flag.String("rest", "", "URL to glusterfsrest api")
-	gfsBase     = flag.String("gfs-base", "/mnt/gfs", "Base directory where volumes are created in the cluster")
-	root        = flag.String("root", defaultDir, "GlusterFS volumes root directory")
+	p_version     = flag.Bool("version", false, "Version of Docker Volumen GlusterFS")
+	p_defaultDir  = filepath.Join(volume.DefaultDockerRootDirectory, glusterfsID)
+	p_serversList = flag.String("servers", "", "List of glusterfs servers")
+	p_restAddress = flag.String("rest", "", "URL to glusterfsrest api")
+	p_gfsBase     = flag.String("gfs-base", "/mnt/gfs", "Base directory where volumes are created in the cluster")
+	p_root        = flag.String("root", p_defaultDir, "GlusterFS volumes root directory")
 )
 
 func main() {
@@ -33,18 +34,18 @@ func main() {
 	}
 
 	flag.Parse()
-	if *version {
+	if *p_version {
 		banner()
 		os.Exit(0)
 	}
-	if len(*serversList) == 0 {
+	if len(*p_serversList) == 0 {
 		Usage()
 		os.Exit(1)
 	}
 
-	servers := strings.Split(*serversList, ":")
+	servers := strings.Split(*p_serversList, ":")
 
-	d := newGlusterfsDriver(*root, *restAddress, *gfsBase, servers)
+	d := newGlusterfsDriver(*p_root, *p_restAddress, *p_gfsBase, servers)
 	h := volume.NewHandler(d)
 	fmt.Println(h.ServeUnix("glusterfs", 0))
 }
@@ -62,7 +63,8 @@ func banner() {
 	fmt.Println("              \\__, /_/\\__,_/____/\\__/\\___/_/  /_/ /____/               ")
 	fmt.Println("             /____/                                                    ")
 	fmt.Println()
-	fmt.Println("Version : ", Version)
-	fmt.Println("Build   : ", Build)
+	fmt.Println("Version : ", version)
+	fmt.Println("Commit  : ", commit)
+	fmt.Println("Date    : ", date)
 	fmt.Println()
 }

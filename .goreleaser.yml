@@ -1,0 +1,45 @@
+release:
+  github:
+    owner: amarkwalder
+    name: docker-volume-glusterfs
+brew:
+  commit_author:
+    name: André Markwalder
+    email: andre.markwalder@gmail.com
+  install: bin.install "docker-volume-glusterfs"
+scoop:
+  commit_author:
+    name: André Markwalder
+    email: andre.markwalder@gmail.com
+before:
+  hooks:
+  - go get -t ./...
+  - go get -d github.com/golang/lint/golint
+  - go get -d github.com/Sirupsen/logrus
+  - go get -d github.com/coreos/go-systemd/activation
+  - go get -d github.com/opencontainers/runc/libcontainer/user
+  - go get -d github.com/Microsoft/go-winio
+  - go get -d golang.org/x/sys/windows
+builds:
+  - binary: docker-volume-glusterfs
+    goos:
+      - linux
+      - darwin
+      - freebsd
+      - windows
+    goarch:
+      - amd64
+      - 386
+      - arm
+    goarm:
+      - 6
+      - 7
+archive:
+  format: tar.gz
+  format_overrides:
+    - goos: windows
+      format: zip
+#sign:
+#   artifacts: checksum
+#git:
+#  short_hash: true

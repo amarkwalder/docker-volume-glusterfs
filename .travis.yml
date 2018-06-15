@@ -1,35 +1,54 @@
 language: go
+
 go: 1.10.x
-script:
-- if [ "${TRAVIS_TAG}" == "" ]; then export VERSION=`git rev-parse --abbrev-ref HEAD`;
-  else export VERSION=${TRAVIS_TAG:1}; fi; if [ "${VERSION}" == "HEAD" ]; then export
-  VERSION=master; fi; export BUILD=`git rev-parse HEAD`; echo ${VERSION} ${BUILD}
-- make build
-- make test
-- make dist
-deploy:
-  provider: releases
-  api_key: $GITHUB_OAUTH_TOKEN
-  file:
-  - dist/docker-volume-glusterfs-${VERSION}-linux_amd64.zip
-  - dist/docker-volume-glusterfs-${VERSION}-linux_amd64.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-linux_386.zip
-  - dist/docker-volume-glusterfs-${VERSION}-linux_386.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-linux_arm.zip
-  - dist/docker-volume-glusterfs-${VERSION}-linux_arm.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-darwin_amd64.zip
-  - dist/docker-volume-glusterfs-${VERSION}-darwin_amd64.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-darwin_386.zip
-  - dist/docker-volume-glusterfs-${VERSION}-darwin_386.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_amd64.zip
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_amd64.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_386.zip
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_386.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-windows_386.zip
-  - dist/docker-volume-glusterfs-${VERSION}-windows_386.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-windows_amd64.zip
-  - dist/docker-volume-glusterfs-${VERSION}-windows_amd64.tar.gz
-  skip_cleanup: true
-  overwrite: true
-  on:
-    tags: true
+
+stages:
+
+  # build & test
+  - name: build and test (master)
+    if: branch = master
+  - name: build and test (release)
+    if: branch != master
+  
+  # deploy
+  - name: deploy (master)
+    if: branch = master
+  - name: deploy (release)
+    if: branch != master
+
+jobs:
+  include:
+
+#before_script:
+#- if [ "${TRAVIS_TAG}" == "" ]; then
+#    export VERSION=`git rev-parse --abbrev-ref HEAD`;
+#  else
+#    export VERSION=${TRAVIS_TAG:1}; 
+#  fi;
+#  if [ "${VERSION}" == "HEAD" ]; then
+#    export VERSION=SNAPSHOT-`git rev-parse HEAD`;
+#  fi;
+#- export BUILD=`git rev-parse HEAD`
+
+#after_success:
+#- unset VERSION BUILD
+
+    - stage: build and test (master)
+      script:
+      - export VERSION=SNAPSHOT-`git rev-parse --abbrev-ref HEAD`
+      - export BUILD=`git rev-parse HEAD`
+      - make build
+      - make test
+
+    - stage: build and test (release)
+      script:
+      - export VERSION=${TRAVIS_TAG:1}; 
+      - export BUILD=`git rev-parse HEAD`
+      - make build
+      - make test
+
+    - stage: deploy (master)
+      script: make dist-snapshot
+
+    - stage: deploy (release)
+      script: make dist-release

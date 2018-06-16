@@ -39,7 +39,3 @@ archive:
   format_overrides:
     - goos: windows
       format: zip
-#sign:
-#   artifacts: checksum
-#git:
-#  short_hash: true

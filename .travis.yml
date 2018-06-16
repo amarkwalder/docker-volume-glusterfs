@@ -19,20 +19,6 @@ stages:
 jobs:
   include:
 
-#before_script:
-#- if [ "${TRAVIS_TAG}" == "" ]; then
-#    export VERSION=`git rev-parse --abbrev-ref HEAD`;
-#  else
-#    export VERSION=${TRAVIS_TAG:1}; 
-#  fi;
-#  if [ "${VERSION}" == "HEAD" ]; then
-#    export VERSION=SNAPSHOT-`git rev-parse HEAD`;
-#  fi;
-#- export BUILD=`git rev-parse HEAD`
-
-#after_success:
-#- unset VERSION BUILD
-
     - stage: build and test (master)
       script:
       - export VERSION=SNAPSHOT-`git rev-parse --abbrev-ref HEAD`

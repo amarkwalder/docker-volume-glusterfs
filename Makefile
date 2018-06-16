@@ -5,22 +5,6 @@
 
 BUILD               = $(shell git rev-parse HEAD)
 
-PLATFORMS           = linux_amd64 linux_386 linux_arm darwin_amd64 darwin_386 freebsd_amd64 freebsd_386 windows_amd64 windows_386
-
-FLAGS_all           = GOPATH=$(GOPATH)
-FLAGS_linux_amd64   = $(FLAGS_all) GOOS=linux GOARCH=amd64
-FLAGS_linux_386     = $(FLAGS_all) GOOS=linux GOARCH=386
-FLAGS_linux_arm     = $(FLAGS_all) GOOS=linux GOARCH=arm
-FLAGS_darwin_amd64  = $(FLAGS_all) GOOS=darwin GOARCH=amd64
-FLAGS_darwin_386    = $(FLAGS_all) GOOS=darwin GOARCH=386
-FLAGS_freebsd_amd64 = $(FLAGS_all) GOOS=freebsd GOARCH=amd64
-FLAGS_freebsd_386   = $(FLAGS_all) GOOS=freebsd GOARCH=386
-FLAGS_windows_386   = $(FLAGS_all) GOOS=windows GOARCH=386
-FLAGS_windows_amd64 = $(FLAGS_all) GOOS=windows GOARCH=amd64
-
-EXTENSION_windows_386=.exe
-EXTENSION_windows_amd64=.exe
-
 msg=@printf "\n\033[0;01m>>> %s\033[0m\n" $1
 
 
@@ -31,7 +15,7 @@ msg=@printf "\n\033[0;01m>>> %s\033[0m\n" $1
 
 build: guard-VERSION deps
 	$(call msg,"Build binary")
-	$(FLAGS_all) go build -ldflags "-X main.version=${VERSION} -X main.commit=${BUILD} -X main.date=`date +%FT%TZ`" -o docker-volume-glusterfs$(EXTENSION_$GOOS_$GOARCH) *.go
+	GOPATH=$(GOPATH) go build -ldflags "-X main.version=${VERSION} -X main.commit=${BUILD} -X main.date=`date +%FT%TZ`" -o docker-volume-glusterfs$(EXTENSION_$GOOS_$GOARCH) *.go
 	./docker-volume-glusterfs -version
 .PHONY: build
 
@@ -59,7 +43,7 @@ uninstall:
 
 test: deps
 	$(call msg,"Run tests")
-	$(FLAGS_all) go test $(wildcard ../*.go)
+	GOPATH=$(GOPATH) go test $(wildcard ../*.go)
 .PHONY: test
 
 clean:
@@ -76,14 +60,6 @@ dist-release: guard-GITHUB_TOKEN
 	curl -sL https://git.io/goreleaser | bash -s -- --rm-dist
 .PHONY: dist-release
 
-#build-all: deps guard-VERSION $(foreach PLATFORM,$(PLATFORMS),dist/$(PLATFORM)/.built)
-#.PHONY: build-all
-
-#dist: guard-VERSION build-all \
-#$(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(VERSION)-$(PLATFORM).zip) \
-#$(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(VERSION)-$(PLATFORM).tar.gz)
-#.PHONY:	dist
-
 release: guard-VERSION
 	$(call msg,"Create and push release")
 	git tag -a "v$(VERSION)" -m "Release $(VERSION)"
@@ -93,24 +69,6 @@ release: guard-VERSION
 
 ################################################################################
 
-#dist/%/.built:
-#	$(call msg,"Build binary for $*")
-#	rm -f $@
-#	mkdir -p $(dir $@)
-#	$(FLAGS_$*) go build -ldflags "-X main.Version=${VERSION} -X main.Build=${BUILD}" -o dist/$*/docker-volume-glusterfs$(EXTENSION_$*) $(wildcard ../*.go)
-#	touch $@
-
-#dist/docker-volume-glusterfs-$(VERSION)-%.zip:
-#	$(call msg,"Create ZIP for $*")
-#	rm -f $@
-#	mkdir -p $(dir $@)
-#	zip -j $@ dist/$*/* -x .built
-
-#dist/docker-volume-glusterfs-$(VERSION)-%.tar.gz:
-#	$(call msg,"Create TAR for $*")
-#	rm -f $@
-#	mkdir -p $(dir $@)
-#	tar czf $@ -C dist/$* --exclude=.built .
 
 guard-%:
 	@ if [ "${${*}}" = "" ]; then \

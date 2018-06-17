@@ -6,15 +6,15 @@ stages:
 
   # build & test
   - name: build and test (master)
-    if: branch = master
+    if: tag IS blank
   - name: build and test (release)
-    if: branch != master
+    if: tag IS present
   
   # deploy
   - name: deploy (master)
-    if: branch = master
+    if: tag IS blank
   - name: deploy (release)
-    if: branch != master
+    if: tag IS present
 
 jobs:
   include:

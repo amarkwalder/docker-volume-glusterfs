@@ -1,26 +1,30 @@
 #!/bin/bash
 
-generate_version_no() { 
+generate_build_version_no() { 
     if [ "${TRAVIS_TAG}" == "" ]; then
-        export VERSION="SNAPSHOT-`git rev-parse --abbrev-ref HEAD`"
+        export BUILD_VERSION="SNAPSHOT_${BUILD_TS}"
     else
-        export VERSION="${TRAVIS_TAG:1}"
-    fi
-
-    if [ "${VERSION}" == "HEAD" ]; then
-        export VERSION="SNAPSHOT-`git rev-parse --abbrev-ref HEAD`"
+        export BUILD_VERSION="${TRAVIS_TAG:1}"
     fi
 }
 
 generate_build_no() {
-    export BUILD=`git rev-parse HEAD`;
+    export BUILD_COMMIT_REF=`git rev-parse HEAD`;
 }
 
-generate_version_no
+generate_build_date() {
+    export BUILD_TS=`date +%Y%m%d_%H%M%S%Z`
+    export BUILD_DATE=`date +%FT%T%Z`
+}
+
+generate_build_date
+generate_build_version_no
 generate_build_no
 
-echo "VERSION : ${VERSION}"
-echo "BUILD   : ${BUILD}"
+echo "BUILD_VERSION      : ${BUILD_VERSION}"
+echo "BUILD_COMMIT_REF   : ${BUILD_COMMIT_REF}"
+echo "BUILD_DATE         : ${BUILD_DATE}"
 
-unset -f generate_version_no
+unset -f generate_build_version_no
 unset -f generate_build_no
+unset -f generate_build_date

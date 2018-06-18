@@ -36,9 +36,9 @@ msg=@printf "\n\033[0;01m>>> %s\033[0m\n" $1
 
 .DEFAULT_GOAL := build
 
-build: guard-VERSION deps
+build: guard-BUILD_VERSION guard-BUILD_COMMIT_REF guard-BUILD_DATE deps
 	$(call msg,"Build binary")
-	$(FLAGS_all) go build -ldflags "-X main.version=${VERSION} -X main.commit=${BUILD} -X main.date=`date +%FT%T%Z`" -o docker-volume-glusterfs$(EXTENSION_$GOOS_$GOARCH) *.go
+	$(FLAGS_all) go build -ldflags "-X main.version=${BUILD_VERSION} -X main.commit=${BUILD_COMMIT_REF} -X main.date=${BUILD_DATE}" -o docker-volume-glusterfs$(EXTENSION_$GOOS_$GOARCH) *.go
 	./docker-volume-glusterfs -version
 .PHONY: build
 
@@ -53,7 +53,7 @@ deps:
 	go get -d golang.org/x/sys/windows
 .PHONY: deps
 
-install: guard-VERSION build
+install: build
 	$(call msg,"Install docker-volume-glusterfs")
 	mkdir -p /usr/local/bin/
 	cp docker-volume-glusterfs /usr/local/bin/
@@ -75,21 +75,22 @@ clean:
 	rm -rf dist
 .PHONY: clean
 
-build-all: deps guard-VERSION $(foreach PLATFORM,$(PLATFORMS),dist/$(PLATFORM)/.built)
+build-all: deps guard-BUILD_VERSION guard-BUILD_COMMIT_REF guard-BUILD_DATE \
+$(foreach PLATFORM,$(PLATFORMS),dist/$(PLATFORM)/.built)
 .PHONY: build-all
 
-dist: guard-VERSION build-all \
-$(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(VERSION)-$(PLATFORM).zip) \
-$(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(VERSION)-$(PLATFORM).tar.gz)
+dist: guard-BUILD_VERSION build-all \
+$(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(BUILD_VERSION)-$(PLATFORM).zip) \
+$(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(BUILD_VERSION)-$(PLATFORM).tar.gz)
 .PHONY:	dist
 
 changelog: guard-GITHUB_TOKEN
 	github-changelog-generator -u amarkwalder -p docker-volume-glusterfs -t ${GITHUB_TOKEN}
 .PHONY: changelog
 
-release: guard-VERSION dist
+release: guard-BUILD_VERSION dist
 	$(call msg,"Create and push release")
-	git tag -a "v$(VERSION)" -m "Release $(VERSION)"
+	git tag -a "v$(BUILD_VERSION)" -m "Release $(BUILD_VERSION)"
 	git push --tags
 .PHONY: release
 
@@ -100,16 +101,16 @@ dist/%/.built:
 	$(call msg,"Build binary for $*")
 	rm -f $@
 	mkdir -p $(dir $@)
-	$(FLAGS_$*) go build -ldflags "-X main.version=${VERSION} -X main.commit=${BUILD} -X main.date=`date +%FT%T%Z`" -o dist/$*/docker-volume-glusterfs$(EXTENSION_$*) $(wildcard ../*.go)
+	$(FLAGS_$*) go build -ldflags "-X main.version=${BUILD_VERSION} -X main.commit=${BUILD_COMMIT_REF} -X main.date=${BUILD_DATE}" -o dist/$*/docker-volume-glusterfs$(EXTENSION_$*) $(wildcard ../*.go)
 	touch $@
 
-dist/docker-volume-glusterfs-$(VERSION)-%.zip:
+dist/docker-volume-glusterfs-$(BUILD_VERSION)-%.zip:
 	$(call msg,"Create ZIP for $*")
 	rm -f $@
 	mkdir -p $(dir $@)
 	zip -j $@ dist/$*/* -x .built
 
-dist/docker-volume-glusterfs-$(VERSION)-%.tar.gz:
+dist/docker-volume-glusterfs-$(BUILD_VERSION)-%.tar.gz:
 	$(call msg,"Create TAR for $*")
 	rm -f $@
 	mkdir -p $(dir $@)

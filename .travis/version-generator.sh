@@ -1,6 +1,6 @@
 #!/bin/bash
 
-generate-version-no() {
+generate_version_no() { 
     if [ "${TRAVIS_TAG}" == "" ]; then
         export VERSION="SNAPSHOT-`git rev-parse --abbrev-ref HEAD`"
     else
@@ -12,15 +12,15 @@ generate-version-no() {
     fi
 }
 
-generate-build-no() {
+generate_build_no() {
     export BUILD=`git rev-parse HEAD`;
 }
 
-generate-version-no
-generate-build-no
+generate_version_no
+generate_build_no
 
 echo "VERSION : ${VERSION}"
 echo "BUILD   : ${BUILD}"
 
-unset -f generate-version-no
-unset -f generate-build-no
+unset -f generate_version_no
+unset -f generate_build_no

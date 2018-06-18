@@ -5,12 +5,16 @@ go: 1.10.x
 install:
 - gem install github_changelog_generator
 
-script:
+before_script:
 - source ./.travis/version-generator.sh
+- source ./.travis/changelog-git-push.sh
+
+script:
 - make build
 - make test
 - make changelog
-- make dist
+- changelog-git-push
+#- make dist
 
 deploy:
   provider: releases

@@ -9,6 +9,8 @@ setup_git() {
 }
 
 make_version() {
+    git checkout -- .
+    git status
     git add CHANGELOG.md
     git commit -m "Generate CHANGELOG.md [skip ci]"
     git push

@@ -2,20 +2,15 @@ language: go
 
 go: 1.10.x
 
+install:
+- gem install github_changelog_generator
+
 script:
-- if [ "${TRAVIS_TAG}" == "" ]; then
-    export VERSION=SNAPSHOT-`git rev-parse --abbrev-ref HEAD`;
-  else
-    export VERSION=${TRAVIS_TAG:1};
-  fi;
-  if [ "${VERSION}" == "HEAD" ]; then
-    export VERSION=SNAPSHOT-`git rev-parse --abbrev-ref HEAD`;
-  fi;
-  export BUILD=`git rev-parse HEAD`;
-  echo ${VERSION} ${BUILD}
+- source ./.travis/version-generator.sh
 - make build
 - make test
 - make dist
+- make changelog
 
 deploy:
   provider: releases

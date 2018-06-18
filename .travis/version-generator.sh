@@ -13,7 +13,7 @@ generate_build_no() {
 }
 
 generate_build_date() {
-    export BUILD_TS=`date +%Y%m%d_%H%M%S%Z`
+    export BUILD_TS=`date +%Y%m%d_%H%M%S_%Z`
     export BUILD_DATE=`date "+%F %T %Z"`
 }
 

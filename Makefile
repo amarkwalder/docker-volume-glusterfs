@@ -36,9 +36,9 @@ msg=@printf "\n\033[0;01m>>> %s\033[0m\n" $1
 
 .DEFAULT_GOAL := build
 
-build: guard-BUILD_VERSION guard-BUILD_COMMIT_REF guard-BUILD_DATE deps
+build: guard-BUILD_VERSION guard-BUILD_REVISION guard-BUILD_DATE deps
 	$(call msg,"Build binary")
-	$(FLAGS_all) go build -ldflags "-X main.version=${BUILD_VERSION} -X main.commit=${BUILD_COMMIT_REF} -X main.date=${BUILD_DATE}" -o docker-volume-glusterfs$(EXTENSION_$GOOS_$GOARCH) *.go
+	$(FLAGS_all) go build -ldflags "-X main.version=${BUILD_VERSION} -X main.revision=${BUILD_REVISION} -X main.date=${BUILD_DATE}" -o docker-volume-glusterfs$(EXTENSION_$GOOS_$GOARCH) *.go
 	./docker-volume-glusterfs -version
 .PHONY: build
 
@@ -75,7 +75,7 @@ clean:
 	rm -rf dist
 .PHONY: clean
 
-build-all: deps guard-BUILD_VERSION guard-BUILD_COMMIT_REF guard-BUILD_DATE \
+build-all: deps guard-BUILD_VERSION guard-BUILD_REVISION guard-BUILD_DATE \
 $(foreach PLATFORM,$(PLATFORMS),dist/$(PLATFORM)/.built)
 .PHONY: build-all
 
@@ -101,7 +101,7 @@ dist/%/.built:
 	$(call msg,"Build binary for $*")
 	rm -f $@
 	mkdir -p $(dir $@)
-	$(FLAGS_$*) go build -ldflags "-X main.version=${BUILD_VERSION} -X main.commit=${BUILD_COMMIT_REF} -X main.date=${BUILD_DATE}" -o dist/$*/docker-volume-glusterfs$(EXTENSION_$*) $(wildcard ../*.go)
+	$(FLAGS_$*) go build -ldflags "-X main.version=${BUILD_VERSION} -X main.revision=${BUILD_REVISION} -X main.date=${BUILD_DATE}" -o dist/$*/docker-volume-glusterfs$(EXTENSION_$*) $(wildcard ../*.go)
 	touch $@
 
 dist/docker-volume-glusterfs-$(BUILD_VERSION)-%.zip:

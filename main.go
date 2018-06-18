@@ -13,9 +13,9 @@ import (
 const glusterfsID = "_glusterfs"
 
 var (
-	version	string
-	commit	string
-	date	string
+	version		string
+	revision	string
+	date		string
 )
 
 var (
@@ -63,8 +63,8 @@ func banner() {
 	fmt.Println("              \\__, /_/\\__,_/____/\\__/\\___/_/  /_/ /____/               ")
 	fmt.Println("             /____/                                                    ")
 	fmt.Println()
-	fmt.Println("Version : ", version)
-	fmt.Println("Commit  : ", commit)
-	fmt.Println("Date    : ", date)
+	fmt.Println("Version  : ", version)
+	fmt.Println("Revision : ", revision)
+	fmt.Println("Date     : ", date)
 	fmt.Println()
 }

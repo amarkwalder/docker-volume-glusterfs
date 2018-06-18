@@ -9,8 +9,8 @@ script:
 - source ./.travis/version-generator.sh
 - make build
 - make test
-- make dist
 - make changelog
+- make dist
 
 deploy:
   provider: releases

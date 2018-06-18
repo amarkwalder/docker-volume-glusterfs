@@ -85,7 +85,7 @@ $(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(BUILD_VERSION)-$(
 .PHONY:	dist
 
 changelog: guard-GITHUB_TOKEN
-	github-changelog-generator -u amarkwalder -p docker-volume-glusterfs -t ${GITHUB_TOKEN}
+	github_changelog_generator -u amarkwalder -p docker-volume-glusterfs -t ${GITHUB_TOKEN}
 .PHONY: changelog
 
 release: guard-BUILD_VERSION dist

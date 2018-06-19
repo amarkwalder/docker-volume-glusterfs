@@ -2,22 +2,20 @@ language: go
 
 go: 1.10.x
 
-install:
-- gem install github_changelog_generator
+#install:
+#- gem install github_changelog_generator
 
 before_script:
 - source ./.travis/version-generator.sh
-- source ./.travis/changelog-git-push.sh
+#- source ./.travis/changelog-git-push.sh
 
 script:
 - make build
 - make test
-- make changelog
-- changelog-git-push
+#- make changelog
+- CHANGELOG_BRANCH=$TRAVIS_BRANCH
+- source ./.travis/deploy-changelog.sh
 - make dist
-
-before_deploy:
-- source ./.travis/changelog-extractor.sh
 
 deploy:
   provider: releases

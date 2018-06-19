@@ -37,7 +37,6 @@ create-and-push-changelog() {
 }
 
 deploy-changelog() {
-	check-vars
 	if [[ "$TRAVIS_PULL_REQUEST" != "false" || "$TRAVIS_BRANCH" != "$CHANGELOG_BRANCH" ]]; then
 		echo "This commit was made against the '$TRAVIS_BRANCH' and not '$CHANGELOG_BRANCH'! Changelog not updated!"
 		exit 0
@@ -46,3 +45,5 @@ deploy-changelog() {
 	setup-git
 	create-and-push-changelog
 }
+
+check-vars

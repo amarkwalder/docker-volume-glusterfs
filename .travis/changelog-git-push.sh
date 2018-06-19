@@ -12,7 +12,7 @@ make_version() {
     if [ "${TRAVIS_TAG}" == "" ]; then
         git checkout -- .
     else
-        git checkout -b ${TRAVIS_BRANCH}
+        git checkout tags/${TRAVIS_TAG} -b ${TRAVIS_BRANCH}
     fi
     git status
     git add CHANGELOG.md

@@ -22,7 +22,6 @@ before_deploy:
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  body: "$RELEASE_NOTES"
   file_glob: true
   file: dist/docker-volume-glusterfs-${BUILD_VERSION}-*
   skip_cleanup: true

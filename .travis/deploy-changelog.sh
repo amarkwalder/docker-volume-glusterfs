@@ -1,12 +1,12 @@
 #!/bin/bash
 
 check-vars() {
-	[[ ! ${CHANGELOG_BRANCH+x} ]] && echo "Variable 'CHANGELOG_BRANCH' not set. Changelog not updated!"; exit 0
-	[[ ! ${CHANGELOG_USER_NAME+x} ]] && echo "Variable 'CHANGELOG_USER_NAME' not set. Changelog not updated!"; exit 0
-	[[ ! ${CHANGELOG_USER_EMAIL+x} ]] && echo "Variable 'CHANGELOG_USER_EMAIL' not set. Changelog not updated!"; exit 0
-	[[ ! ${GITHUB_TOKEN+x} ]] && echo "Variable 'GITHUB_TOKEN' not set. Changelog not updated!"; exit 0
-	[[ ! ${TRAVIS_REPO_SLUG+x} ]] && echo "Variable 'TRAVIS_REPO_SLUG' not set. Changelog not updated!"; exit 0
-	[[ ! ${TRAVIS_PULL_REQUEST+x} ]] && echo "Variable 'TRAVIS_PULL_REQUEST' not set. Changelog not updated!"; exit 0
+	[[ ! ${CHANGELOG_BRANCH+x} ]] && echo "Variable 'CHANGELOG_BRANCH' not set. Changelog not updated!"; exit 1
+	[[ ! ${CHANGELOG_USER_NAME+x} ]] && echo "Variable 'CHANGELOG_USER_NAME' not set. Changelog not updated!"; exit 1
+	[[ ! ${CHANGELOG_USER_EMAIL+x} ]] && echo "Variable 'CHANGELOG_USER_EMAIL' not set. Changelog not updated!"; exit 1
+	[[ ! ${GITHUB_TOKEN+x} ]] && echo "Variable 'GITHUB_TOKEN' not set. Changelog not updated!"; exit 1
+	[[ ! ${TRAVIS_REPO_SLUG+x} ]] && echo "Variable 'TRAVIS_REPO_SLUG' not set. Changelog not updated!"; exit 1
+	[[ ! ${TRAVIS_PULL_REQUEST+x} ]] && echo "Variable 'TRAVIS_PULL_REQUEST' not set. Changelog not updated!"; exit 1
 }
 
 install-changelog-generator() {

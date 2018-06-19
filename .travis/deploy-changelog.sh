@@ -1,7 +1,6 @@
 #!/bin/bash
 
 check-vars() {
-	[[ ! ${CHANGELOG_BRANCH+x} ]] && echo "Variable 'CHANGELOG_BRANCH' not set. Changelog not updated!"; exit 1
 	[[ ! ${CHANGELOG_USER_NAME+x} ]] && echo "Variable 'CHANGELOG_USER_NAME' not set. Changelog not updated!"; exit 1
 	[[ ! ${CHANGELOG_USER_EMAIL+x} ]] && echo "Variable 'CHANGELOG_USER_EMAIL' not set. Changelog not updated!"; exit 1
 	[[ ! ${GITHUB_TOKEN+x} ]] && echo "Variable 'GITHUB_TOKEN' not set. Changelog not updated!"; exit 1
@@ -27,18 +26,12 @@ create-and-push-changelog() {
 
 	git remote add upstream "https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
 	git fetch upstream
-	git checkout $CHANGELOG_BRANCH
-
-	github_changelog_generator -t ${GITHUB_TOKEN}
-
-	git add -A CHANGELOG.md
-	git commit -m "Update CHANGELOG.md at ${rev} [skip ci]"
-	git push upstream $CHANGELOG_BRANCH
+	git checkout $TRAVIS_BRANCH
 }
 
 deploy-changelog() {
-	if [[ "$TRAVIS_PULL_REQUEST" != "false" || "$TRAVIS_BRANCH" != "$CHANGELOG_BRANCH" ]]; then
-		echo "This commit was made against the '$TRAVIS_BRANCH' and not '$CHANGELOG_BRANCH'! Changelog not updated!"
+	if [[ "$TRAVIS_PULL_REQUEST" != "false" || "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ]]; then
+		echo "The build was triggered by a 'Pull Request' or it is a tag'ed build! Changelog not updated!"
 		exit 0
 	fi
 	install-changelog-generator

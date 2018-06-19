@@ -1,7 +1,8 @@
 # Change Log
 
-## [v0.1.5](https://github.com/amarkwalder/docker-volume-glusterfs/tree/v0.1.5) (2018-06-19)
-[Full Changelog](https://github.com/amarkwalder/docker-volume-glusterfs/compare/v0.1.4...v0.1.5)
+## [Unreleased](https://github.com/amarkwalder/docker-volume-glusterfs/tree/HEAD)
+
+[Full Changelog](https://github.com/amarkwalder/docker-volume-glusterfs/compare/v0.1.4...HEAD)
 
 **Implemented enhancements:**
 

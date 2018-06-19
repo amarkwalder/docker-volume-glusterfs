@@ -14,42 +14,17 @@ script:
 - make test
 - make changelog
 - changelog-git-push
-#- make dist
+- make dist
+
+before_deploy:
+- source ./.tranvis/changelog-extractor.sh
 
 deploy:
   provider: releases
-  api_key: $GITHUB_OAUTH_TOKEN
-  file:
-  - dist/docker-volume-glusterfs-${VERSION}-linux_amd64.zip
-  - dist/docker-volume-glusterfs-${VERSION}-linux_amd64.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-linux_386.zip
-  - dist/docker-volume-glusterfs-${VERSION}-linux_386.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-linux_armv5.zip
-  - dist/docker-volume-glusterfs-${VERSION}-linux_armv5.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-linux_armv6.zip
-  - dist/docker-volume-glusterfs-${VERSION}-linux_armv6.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-linux_armv7.zip
-  - dist/docker-volume-glusterfs-${VERSION}-linux_armv7.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-linux_armv8.zip
-  - dist/docker-volume-glusterfs-${VERSION}-linux_armv8.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-darwin_amd64.zip
-  - dist/docker-volume-glusterfs-${VERSION}-darwin_amd64.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-darwin_386.zip
-  - dist/docker-volume-glusterfs-${VERSION}-darwin_386.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_amd64.zip
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_amd64.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_386.zip
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_386.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_armv5.zip
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_armv5.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_armv6.zip
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_armv6.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_armv7.zip
-  - dist/docker-volume-glusterfs-${VERSION}-freebsd_armv7.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-windows_386.zip
-  - dist/docker-volume-glusterfs-${VERSION}-windows_386.tar.gz
-  - dist/docker-volume-glusterfs-${VERSION}-windows_amd64.zip
-  - dist/docker-volume-glusterfs-${VERSION}-windows_amd64.tar.gz
+  api_key: $GITHUB_TOKEN
+  body: "$RELEASE_NOTES"
+  file_glob: true
+  file: dist/docker-volume-glusterfs-${BUILD_VERSION}-*
   skip_cleanup: true
   overwrite: true
   on:

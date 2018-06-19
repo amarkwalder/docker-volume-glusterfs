@@ -24,5 +24,5 @@ git checkout $CHANGELOG_BRANCH
 github_changelog_generator -t ${GITHUB_TOKEN}
 
 git add -A CHANGELOG.md
-git commit -m "updated changelog at ${rev}"
+git commit -m "Updated changelog at ${rev} [skip ci]"
 git push upstream $CHANGELOG_BRANCH

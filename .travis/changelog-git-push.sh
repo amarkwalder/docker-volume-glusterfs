@@ -9,7 +9,7 @@ setup_git() {
 }
 
 make_version() {
-    git checkout -- .
+    git checkout -b ${TRAVIS_BRANCH} -- .
     git status
     git add CHANGELOG.md
     git commit -m "Generate CHANGELOG.md [skip ci]"
@@ -22,7 +22,11 @@ upload_files() {
 }
 
 changelog-git-push() {
-    setup_git
-    make_version
-    upload_files
+    if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
+        setup_git
+        make_version
+        upload_files
+    else
+        echo "******** Initiatior of the build task is a 'Pull Request' and CHANGELOG.md won't be generated for this type of task. ********"
+    fi
 }

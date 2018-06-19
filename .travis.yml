@@ -17,7 +17,7 @@ script:
 - make dist
 
 before_deploy:
-- source ./.tranvis/changelog-extractor.sh
+- source ./.travis/changelog-extractor.sh
 
 deploy:
   provider: releases

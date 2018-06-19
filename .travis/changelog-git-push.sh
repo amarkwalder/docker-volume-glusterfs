@@ -9,7 +9,11 @@ setup_git() {
 }
 
 make_version() {
-    git checkout -b ${TRAVIS_BRANCH} -- .
+    if [ "${TRAVIS_TAG}" == "" ]; then
+        git checkout -- .
+    else
+        git checkout -b ${TRAVIS_BRANCH}
+    fi
     git status
     git add CHANGELOG.md
     git commit -m "Generate CHANGELOG.md [skip ci]"

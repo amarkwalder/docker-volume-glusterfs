@@ -1,10 +1,11 @@
 #!/bin/bash
 
 check-vars() {
-	echo CHANGELOG_USER_NAME  : $CHANGELOG_USER_NAME
-	echo CHANGELOG_USER_EMAIL : $CHANGELOG_USER_EMAIL
-	echo TRAVIS_REPO_SLUG     : $TRAVIS_REPO_SLUG
-	echo TRAVIS_PULL_REQUEST  : $TRAVIS_PULL_REQUEST
+	echo "CHANGELOG_USER_NAME  : $CHANGELOG_USER_NAME"
+	echo "CHANGELOG_USER_EMAIL : $CHANGELOG_USER_EMAIL"
+	echo "GITHUB_TOKEN         : ${#GITHUB_TOKEN}"
+	echo "TRAVIS_REPO_SLUG     : $TRAVIS_REPO_SLUG"
+	echo "TRAVIS_PULL_REQUEST  : $TRAVIS_PULL_REQUEST"
 
 	[[ ! ${CHANGELOG_USER_NAME+x} ]]  && { echo "Variable 'CHANGELOG_USER_NAME' not set. Changelog not updated!";  exit 1; }
 	[[ ! ${CHANGELOG_USER_EMAIL+x} ]] && { echo "Variable 'CHANGELOG_USER_EMAIL' not set. Changelog not updated!"; exit 1; }

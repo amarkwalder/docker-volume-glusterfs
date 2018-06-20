@@ -8,9 +8,6 @@ install-changelog-generator() {
 setup-git() {
     git config --global user.email $CHANGELOG_USER_EMAIL
     git config --global user.name $CHANGELOG_USER_NAME
-#    git config --global push.default matching
-#    git config credential.helper "store --file=.git/credentials"
-#    echo "https://${GITHUB_TOKEN}:@github.com" > .git/credentials
 }
 
 create-and-push-changelog() {
@@ -18,6 +15,12 @@ create-and-push-changelog() {
 	git remote add upstream "https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
 	git fetch upstream
 	git checkout $TRAVIS_BRANCH
+
+	github_changelog_generator -t $GITHUB_TOKEN
+
+	git add -A CHANGELOG.md
+	git commit -m "Updated changelog at ${rev} [skip ci]"
+	git push upstream $TRAVIS_BRANCH
 }
 
 deploy-changelog() {

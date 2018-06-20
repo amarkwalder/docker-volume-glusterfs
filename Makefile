@@ -84,10 +84,6 @@ $(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(BUILD_VERSION)-$(
 $(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(BUILD_VERSION)-$(PLATFORM).tar.gz)
 .PHONY:	dist
 
-changelog: guard-GITHUB_TOKEN
-	github_changelog_generator -u amarkwalder -p docker-volume-glusterfs -t ${GITHUB_TOKEN}
-.PHONY: changelog
-
 release: guard-BUILD_VERSION
 	$(call msg,"Create and push release")
 	git tag -a "v$(BUILD_VERSION)" -m "Release $(BUILD_VERSION)"

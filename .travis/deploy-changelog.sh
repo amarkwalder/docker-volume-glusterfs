@@ -37,8 +37,23 @@ echo "GITHUB_TOKEN         : ${#GITHUB_TOKEN}"
 echo "TRAVIS_REPO_SLUG     : $TRAVIS_REPO_SLUG"
 echo "TRAVIS_PULL_REQUEST  : $TRAVIS_PULL_REQUEST"
 
-[[ ! ${CHANGELOG_USER_NAME+x} ]]  && { echo "Variable 'CHANGELOG_USER_NAME' not set. Changelog not updated!";  exit 1; }
-[[ ! ${CHANGELOG_USER_EMAIL+x} ]] && { echo "Variable 'CHANGELOG_USER_EMAIL' not set. Changelog not updated!"; exit 1; }
-[[ ! ${GITHUB_TOKEN+x} ]]         && { echo "Variable 'GITHUB_TOKEN' not set. Changelog not updated!";         exit 1; }
-[[ ! ${TRAVIS_REPO_SLUG+x} ]]     && { echo "Variable 'TRAVIS_REPO_SLUG' not set. Changelog not updated!";     exit 1; }
-[[ ! ${TRAVIS_PULL_REQUEST+x} ]]  && { echo "Variable 'TRAVIS_PULL_REQUEST' not set. Changelog not updated!";  exit 1; }
+if [[ ! ${CHANGELOG_USER_NAME+x} ]]; then
+	echo "Variable 'CHANGELOG_USER_NAME' not set. Changelog not updated!"
+	exit 1
+fi
+if [[ ! ${CHANGELOG_USER_EMAIL+x} ]]; then
+	echo "Variable 'CHANGELOG_USER_EMAIL' not set. Changelog not updated!"
+	exit 1
+fi
+if [[ ! ${GITHUB_TOKEN+x} ]]; then
+	echo "Variable 'GITHUB_TOKEN' not set. Changelog not updated!"
+	exit 1
+fi
+if [[ ! ${TRAVIS_REPO_SLUG+x} ]]; then
+	echo "Variable 'TRAVIS_REPO_SLUG' not set. Changelog not updated!"
+	exit 1
+fi
+if [[ ! ${TRAVIS_PULL_REQUEST+x} ]]; then
+	echo "Variable 'TRAVIS_PULL_REQUEST' not set. Changelog not updated!"
+	exit 1
+fi

@@ -13,18 +13,18 @@ import (
 const glusterfsID = "_glusterfs"
 
 var (
-	version		string
-	revision	string
-	date		string
+	version  string
+	revision string
+	date     string
 )
 
 var (
-	p_version     = flag.Bool("version", false, "Version of Docker Volumen GlusterFS")
-	p_defaultDir  = filepath.Join(volume.DefaultDockerRootDirectory, glusterfsID)
-	p_serversList = flag.String("servers", "", "List of glusterfs servers")
-	p_restAddress = flag.String("rest", "", "URL to glusterfsrest api")
-	p_gfsBase     = flag.String("gfs-base", "/mnt/gfs", "Base directory where volumes are created in the cluster")
-	p_root        = flag.String("root", p_defaultDir, "GlusterFS volumes root directory")
+	pVersion     = flag.Bool("version", false, "Version of Docker Volumen GlusterFS")
+	pDefaultDir  = filepath.Join(volume.DefaultDockerRootDirectory, glusterfsID)
+	pServersList = flag.String("servers", "", "List of glusterfs servers")
+	pRestAddress = flag.String("rest", "", "URL to glusterfsrest api")
+	pGfsBase     = flag.String("gfs-base", "/mnt/gfs", "Base directory where volumes are created in the cluster")
+	pRoot        = flag.String("root", pDefaultDir, "GlusterFS volumes root directory")
 )
 
 func main() {
@@ -34,18 +34,18 @@ func main() {
 	}
 
 	flag.Parse()
-	if *p_version {
+	if *pVersion {
 		banner()
 		os.Exit(0)
 	}
-	if len(*p_serversList) == 0 {
+	if len(*pServersList) == 0 {
 		Usage()
 		os.Exit(1)
 	}
 
-	servers := strings.Split(*p_serversList, ":")
+	servers := strings.Split(*pServersList, ":")
 
-	d := newGlusterfsDriver(*p_root, *p_restAddress, *p_gfsBase, servers)
+	d := newGlusterfsDriver(*pRoot, *pRestAddress, *pGfsBase, servers)
 	h := volume.NewHandler(d)
 	fmt.Println(h.ServeUnix("glusterfs", 0))
 }

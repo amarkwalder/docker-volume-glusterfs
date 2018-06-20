@@ -2,19 +2,13 @@ language: go
 
 go: 1.10.x
 
-#install:
-#- gem install github_changelog_generator
-
 before_script:
 - source ./.travis/version-generator.sh
 - source ./.travis/deploy-changelog.sh
-#- source ./.travis/changelog-git-push.sh
 
 script:
 - make build
 - make test
-#- make changelog
-- CHANGELOG_BRANCH=$TRAVIS_BRANCH
 - deploy-changelog
 #- make dist
 
@@ -29,8 +23,6 @@ deploy:
     tags: true
 
 notifications:
-  email:
-    - andre.markwalder@gmail.com
   webhooks:
     urls:
       - https://webhooks.gitter.im/e/273c2a06c952534253d1

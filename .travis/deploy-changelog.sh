@@ -8,14 +8,13 @@ install-changelog-generator() {
 setup-git() {
     git config --global user.email $CHANGELOG_USER_EMAIL
     git config --global user.name $CHANGELOG_USER_NAME
-    git config --global push.default matching
-    git config credential.helper "store --file=.git/credentials"
-    echo "https://${GITHUB_TOKEN}:@github.com" > .git/credentials
+#    git config --global push.default matching
+#    git config credential.helper "store --file=.git/credentials"
+#    echo "https://${GITHUB_TOKEN}:@github.com" > .git/credentials
 }
 
 create-and-push-changelog() {
 	rev=$(git rev-parse --short HEAD)
-
 	git remote add upstream "https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
 	git fetch upstream
 	git checkout $TRAVIS_BRANCH
@@ -23,7 +22,7 @@ create-and-push-changelog() {
 
 deploy-changelog() {
 	if [[ "$TRAVIS_PULL_REQUEST" != "false" || "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ]]; then
-		echo "The build was triggered by a 'Pull Request' or it is a tag'ed build! Changelog not updated!"
+		echo "The build was triggered by a 'Pull Request' or it is a tagged commit! Changelog not updated!"
 		exit 0
 	fi
 	install-changelog-generator
@@ -33,7 +32,7 @@ deploy-changelog() {
 
 echo "CHANGELOG_USER_NAME  : $CHANGELOG_USER_NAME"
 echo "CHANGELOG_USER_EMAIL : $CHANGELOG_USER_EMAIL"
-echo "GITHUB_TOKEN         : ${#GITHUB_TOKEN}"
+echo "GITHUB_TOKEN         : ( length = ${#GITHUB_TOKEN} )"
 echo "TRAVIS_REPO_SLUG     : $TRAVIS_REPO_SLUG"
 echo "TRAVIS_PULL_REQUEST  : $TRAVIS_PULL_REQUEST"
 

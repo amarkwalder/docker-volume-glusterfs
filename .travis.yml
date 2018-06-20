@@ -9,8 +9,10 @@ before_script:
 script:
 - make build
 - make test
-- deploy-changelog
 #- make dist
+
+after_success:
+- deploy-changelog
 
 deploy:
   provider: releases

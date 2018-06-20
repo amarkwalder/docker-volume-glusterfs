@@ -1,19 +1,5 @@
 #!/bin/bash
 
-check-vars() {
-	echo "CHANGELOG_USER_NAME  : $CHANGELOG_USER_NAME"
-	echo "CHANGELOG_USER_EMAIL : $CHANGELOG_USER_EMAIL"
-	echo "GITHUB_TOKEN         : ${#GITHUB_TOKEN}"
-	echo "TRAVIS_REPO_SLUG     : $TRAVIS_REPO_SLUG"
-	echo "TRAVIS_PULL_REQUEST  : $TRAVIS_PULL_REQUEST"
-
-	[[ ! ${CHANGELOG_USER_NAME+x} ]]  && { echo "Variable 'CHANGELOG_USER_NAME' not set. Changelog not updated!";  exit 1; }
-	[[ ! ${CHANGELOG_USER_EMAIL+x} ]] && { echo "Variable 'CHANGELOG_USER_EMAIL' not set. Changelog not updated!"; exit 1; }
-	[[ ! ${GITHUB_TOKEN+x} ]]         && { echo "Variable 'GITHUB_TOKEN' not set. Changelog not updated!";         exit 1; }
-	[[ ! ${TRAVIS_REPO_SLUG+x} ]]     && { echo "Variable 'TRAVIS_REPO_SLUG' not set. Changelog not updated!";     exit 1; }
-	[[ ! ${TRAVIS_PULL_REQUEST+x} ]]  && { echo "Variable 'TRAVIS_PULL_REQUEST' not set. Changelog not updated!";  exit 1; }
-}
-
 install-changelog-generator() {
 	gem install rack -v 1.6.4
 	gem install github_changelog_generator
@@ -45,4 +31,14 @@ deploy-changelog() {
 	create-and-push-changelog
 }
 
-check-vars
+echo "CHANGELOG_USER_NAME  : $CHANGELOG_USER_NAME"
+echo "CHANGELOG_USER_EMAIL : $CHANGELOG_USER_EMAIL"
+echo "GITHUB_TOKEN         : ${#GITHUB_TOKEN}"
+echo "TRAVIS_REPO_SLUG     : $TRAVIS_REPO_SLUG"
+echo "TRAVIS_PULL_REQUEST  : $TRAVIS_PULL_REQUEST"
+
+[[ ! ${CHANGELOG_USER_NAME+x} ]]  && { echo "Variable 'CHANGELOG_USER_NAME' not set. Changelog not updated!";  exit 1; }
+[[ ! ${CHANGELOG_USER_EMAIL+x} ]] && { echo "Variable 'CHANGELOG_USER_EMAIL' not set. Changelog not updated!"; exit 1; }
+[[ ! ${GITHUB_TOKEN+x} ]]         && { echo "Variable 'GITHUB_TOKEN' not set. Changelog not updated!";         exit 1; }
+[[ ! ${TRAVIS_REPO_SLUG+x} ]]     && { echo "Variable 'TRAVIS_REPO_SLUG' not set. Changelog not updated!";     exit 1; }
+[[ ! ${TRAVIS_PULL_REQUEST+x} ]]  && { echo "Variable 'TRAVIS_PULL_REQUEST' not set. Changelog not updated!";  exit 1; }

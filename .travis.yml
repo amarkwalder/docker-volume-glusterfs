@@ -20,15 +20,15 @@ jobs:
   includes:
 
   - stage: build
-#    before_script:
-#      - source ./.travis/version-generator.sh
-#    script: 
-#      - make build
-#      - make test
-#      - make dist
-#      - cp dist/* ~/$TRAVIS_BUILD_NUMBER/
-#    after_failure:
-#      - aws s3 rm --recursive s3://docker-volume-glusterfs/$TRAVIS_BUILD_NUMBER
+    before_script:
+      - source ./.travis/version-generator.sh
+    script: 
+      - make build
+      - make test
+      - make dist
+      - cp dist/* ~/$TRAVIS_BUILD_NUMBER/
+    after_failure:
+      - aws s3 rm --recursive s3://docker-volume-glusterfs/$TRAVIS_BUILD_NUMBER
 
   - stage: release
 #    before_script:

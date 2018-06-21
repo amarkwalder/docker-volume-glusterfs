@@ -33,6 +33,8 @@ deploy-changelog() {
 	create-and-push-changelog
 }
 
+RELEASE=$(<RELEASE)
+
 echo "CHANGELOG_USER_NAME  : $CHANGELOG_USER_NAME"
 echo "CHANGELOG_USER_EMAIL : $CHANGELOG_USER_EMAIL"
 echo "GITHUB_TOKEN         : ( length = ${#GITHUB_TOKEN} )"

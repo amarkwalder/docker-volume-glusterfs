@@ -1,10 +1,10 @@
 #!/bin/bash
 
-generate_build_version_no() { 
-    if [ "${TRAVIS_TAG}" == "" ]; then
-        export BUILD_VERSION="SNAPSHOT_${BUILD_TS}"
+generate_build_version_no() {
+    if [[ ${TRAVIS_BRANCH} =~ \r\e\l\e\a\s\e\-\v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+        export BUILD_VERSION="${TRAVIS_BRANCH:9}"
     else
-        export BUILD_VERSION="${TRAVIS_TAG:1}"
+        export BUILD_VERSION="SNAPSHOT_${BUILD_TS}"
     fi
 }
 

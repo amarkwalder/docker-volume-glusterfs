@@ -2,51 +2,30 @@ language: go
 
 go: 1.10.x
 
-env:
-  global:
-    - PATH=$HOME/.local/bin:$PATH
+before_script:
+  - source ./.travis/version-generator.sh
+  - source ./.travis/deploy-changelog.sh
 
-stages:
-- build
-- release
-#  if: $TRAVIS_BRANCH =~ ^release-v[0-9]+\.[0-9]+\.[0-9]+ 
+script: 
+  - make build
+  - make test
+  - make dist
 
-before_install:
-  - pip install --user awscli
-  - mkdir -p ~/$TRAVIS_BUILD_NUMBER
-  - aws s3 sync s3://docker-volume-glusterfs/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
+after_success:
+  - RELEASE=$BUILD_VERSION deploy-changelog
+  if: branch =~ \r\e\l\e\a\s\e\-\v[0-9]+\.[0-9]+\.[0-9]+
 
-jobs:
-  includes:
 
-  - stage: build
-    before_script:
-      - source ./.travis/version-generator.sh
-    script: 
-      - make build
-      - make test
-      - make dist
-      - cp dist/* ~/$TRAVIS_BUILD_NUMBER/
-    after_failure:
-      - aws s3 rm --recursive s3://docker-volume-glusterfs/$TRAVIS_BUILD_NUMBER
+#deploy:
+#  provider: releases
+#  api_key: $GITHUB_TOKEN
+#  file_glob: true
+#  file: dist/docker-volume-glusterfs-${BUILD_VERSION}-*
+#  skip_cleanup: true
+#  overwrite: true
+#  on: $TRAVIS_BRANCH =~ ^release-v[0-9]+\.[0-9]+\.[0-9]+ 
 
-  - stage: release
-#    before_script:
-#      - source ./.travis/deploy-changelog.sh
-#    script:
-#      - deploy-changelog
-#    deploy:
-#      provider: releases
-#      api_key: $GITHUB_TOKEN
-#      file_glob: true
-#      file: ~/$TRAVIS_BUILD_NUMBER/docker-volume-glusterfs-${BUILD_VERSION}-*
-#      skip_cleanup: true
-#      overwrite: true
-#    after_script:
-#      - aws s3 rm --recursive s3://docker-volume-glusterfs/$TRAVIS_BUILD_NUMBER
 
-#after_success:
-#  - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://docker-volume-glusterfs/$TRAVIS_BUILD_NUMBER
 
 #before_script:
 #- source ./.travis/version-generator.sh

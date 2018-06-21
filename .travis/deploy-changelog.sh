@@ -24,16 +24,10 @@ create-and-push-changelog() {
 }
 
 deploy-changelog() {
-	if [[ "$TRAVIS_PULL_REQUEST" != "false" || "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ]]; then
-		echo "The build was triggered by a 'Pull Request' or it is a tagged commit! Changelog not updated!"
-	else
-		install-changelog-generator
-		setup-git
-		create-and-push-changelog
-	fi
+	install-changelog-generator
+	setup-git
+	create-and-push-changelog
 }
-
-RELEASE=$( eval "echo $( < RELEASE )" )
 
 echo "CHANGELOG_USER_NAME  : $CHANGELOG_USER_NAME"
 echo "CHANGELOG_USER_EMAIL : $CHANGELOG_USER_EMAIL"

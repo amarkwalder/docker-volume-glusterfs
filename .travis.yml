@@ -13,7 +13,7 @@ script:
 
 after_success:
   - RELEASE=$BUILD_VERSION deploy-changelog
-  if: branch =~ \r\e\l\e\a\s\e\-\v[0-9]+\.[0-9]+\.[0-9]+
+#  if: branch =~ \r\e\l\e\a\s\e\-\v[0-9]+\.[0-9]+\.[0-9]+
 
 
 #deploy:

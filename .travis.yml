@@ -21,7 +21,8 @@ deploy:
   file: dist/docker-volume-glusterfs-${BUILD_VERSION}-*
   skip_cleanup: true
   overwrite: true
-  on: "$RELEASE" == "YES"
+  on:
+    condition: "$RELEASE" == "YES"
 
 
 

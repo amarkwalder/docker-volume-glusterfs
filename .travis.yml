@@ -17,7 +17,7 @@ before_install:
   - aws s3 sync s3://docker-volume-glusterfs/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
 
 jobs:
-  include:
+  includes:
 
   - stage: build
 #    before_script:

@@ -26,8 +26,6 @@ deploy:
 
 after_deploy:
 - echo "************* AFTER DEPLOY ***************"
-  on:
-    tags: true
 
 notifications:
   webhooks:

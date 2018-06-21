@@ -9,7 +9,7 @@ env:
 stages:
 - build
 - release
-  if: $TRAVIS_BRANCH =~ ^release-v[0-9]+\.[0-9]+\.[0-9]+ 
+#  if: $TRAVIS_BRANCH =~ ^release-v[0-9]+\.[0-9]+\.[0-9]+ 
 
 before_install:
   - pip install --user awscli

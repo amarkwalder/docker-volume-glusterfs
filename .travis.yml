@@ -4,8 +4,8 @@ go: 1.10.x
 
 before_script:
 - source ./.travis/version-generator.sh
-- source ./.travis/deploy-changelog.sh
 - source ./RELEASE
+- source ./.travis/deploy-changelog.sh
 
 script:
 - make build

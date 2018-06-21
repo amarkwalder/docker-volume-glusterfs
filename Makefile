@@ -5,7 +5,8 @@
 
 BUILD               = $(shell git rev-parse HEAD)
 
-PLATFORMS           = linux_amd64 linux_386 linux_armv5 linux_armv6 linux_armv7 linux_armv8 darwin_amd64 darwin_386 freebsd_amd64 freebsd_386 freebsd_armv5 freebsd_armv6 freebsd_armv7 windows_amd64 windows_386
+PLATFORMS           = linux_amd64
+# linux_386 linux_armv5 linux_armv6 linux_armv7 linux_armv8 darwin_amd64 darwin_386 freebsd_amd64 freebsd_386 freebsd_armv5 freebsd_armv6 freebsd_armv7 windows_amd64 windows_386
 
 FLAGS_all           = GOPATH=$(GOPATH)
 
@@ -88,15 +89,18 @@ $(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(BUILD_VERSION)-$(
 ################################################################################
 
 
-release: guard-VERSION
+prepare-release: guard-VERSION
 	$(call msg,"Create and push release")
 	echo v$(VERSION) > RELEASE
 	git add RELEASE
 	git commit -m "Prepare Release $(VERSION)"
 	git push
+.PHONY: prepare-release
+
+tag-release: guard-VERSION
 	git tag -a "v$(VERSION)" -m "Release $(VERSION)"
 	git push --tags
-.PHONY: release
+.PHONY: tag-release
 
 
 ################################################################################

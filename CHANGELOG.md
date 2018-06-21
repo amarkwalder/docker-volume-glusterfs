@@ -1,7 +1,7 @@
 # Change Log
 
-## [$BUILD_VERSION](https://github.com/amarkwalder/docker-volume-glusterfs/tree/$BUILD_VERSION) (2018-06-21)
-[Full Changelog](https://github.com/amarkwalder/docker-volume-glusterfs/compare/v0.1.4...$BUILD_VERSION)
+## [SNAPSHOT_20180621_002921_UTC](https://github.com/amarkwalder/docker-volume-glusterfs/tree/SNAPSHOT_20180621_002921_UTC) (2018-06-21)
+[Full Changelog](https://github.com/amarkwalder/docker-volume-glusterfs/compare/v0.1.4...SNAPSHOT_20180621_002921_UTC)
 
 **Implemented enhancements:**
 

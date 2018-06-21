@@ -12,10 +12,7 @@ script:
   - make dist
 
 after_success:
-  - |
-    if [ "$RELEASE" == "YES" ]; then
-      deploy-changelog
-    fi
+  - if [ "$RELEASE" == "YES" ]; then deploy-changelog; fi
 
 deploy:
   provider: releases

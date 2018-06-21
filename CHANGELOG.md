@@ -1,7 +1,7 @@
 # Change Log
 
-## [vSNAPSHOT-bla](https://github.com/amarkwalder/docker-volume-glusterfs/tree/vSNAPSHOT-bla) (2018-06-21)
-[Full Changelog](https://github.com/amarkwalder/docker-volume-glusterfs/compare/v0.1.4...vSNAPSHOT-bla)
+## [v0.1.5](https://github.com/amarkwalder/docker-volume-glusterfs/tree/v0.1.5) (2018-06-21)
+[Full Changelog](https://github.com/amarkwalder/docker-volume-glusterfs/compare/v0.1.4...v0.1.5)
 
 **Implemented enhancements:**
 

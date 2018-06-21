@@ -9,7 +9,7 @@ before_script:
 script:
 - make build
 - make test
-#- make dist
+- make dist
 
 after_success:
 - deploy-changelog
@@ -21,6 +21,11 @@ deploy:
   file: dist/docker-volume-glusterfs-${BUILD_VERSION}-*
   skip_cleanup: true
   overwrite: true
+  on:
+    tags: true
+
+after_deploy:
+- echo "************* AFTER DEPLOY ***************"
   on:
     tags: true
 

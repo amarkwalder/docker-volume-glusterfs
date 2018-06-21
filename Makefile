@@ -84,14 +84,23 @@ $(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(BUILD_VERSION)-$(
 $(foreach PLATFORM,$(PLATFORMS),dist/docker-volume-glusterfs-$(BUILD_VERSION)-$(PLATFORM).tar.gz)
 .PHONY:	dist
 
-release: guard-BUILD_VERSION
+
+################################################################################
+
+
+release: guard-VERSION
 	$(call msg,"Create and push release")
-	git tag -a "v$(BUILD_VERSION)" -m "Release $(BUILD_VERSION)"
+	echo v$(VERSION) > RELEASE
+	git add RELEASE
+	git commit -m "Prepare Release $(VERSION)"
+	git push
+	git tag -a "v$(VERSION)" -m "Release $(VERSION)"
 	git push --tags
 .PHONY: release
 
 
 ################################################################################
+
 
 dist/%/.built:
 	$(call msg,"Build binary for $*")

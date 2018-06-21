@@ -4,7 +4,7 @@ go: 1.10.x
 
 before_script:
   - source ./.travis/version-generator.sh
-  - RELEASE=$BUILD_VERSION source ./.travis/deploy-changelog.sh
+  - source ./.travis/deploy-changelog.sh
 
 script: 
   - make build
@@ -12,18 +12,16 @@ script:
   - make dist
 
 after_success:
-  - deploy-changelog
-#  if: branch =~ \r\e\l\e\a\s\e\-\v[0-9]+\.[0-9]+\.[0-9]+
+  -[[ "$RELEASE" == "YES" ]] && deploy-changelog
 
-
-#deploy:
-#  provider: releases
-#  api_key: $GITHUB_TOKEN
-#  file_glob: true
-#  file: dist/docker-volume-glusterfs-${BUILD_VERSION}-*
-#  skip_cleanup: true
-#  overwrite: true
-#  on: $TRAVIS_BRANCH =~ ^release-v[0-9]+\.[0-9]+\.[0-9]+ 
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file: dist/docker-volume-glusterfs-${BUILD_VERSION}-*
+  skip_cleanup: true
+  overwrite: true
+  on: "$RELEASE" == "YES"
 
 
 

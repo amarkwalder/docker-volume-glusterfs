@@ -16,7 +16,7 @@ create-and-push-changelog() {
 	git fetch upstream
 	git checkout $TRAVIS_BRANCH
 
-	github_changelog_generator -t $GITHUB_TOKEN --future-release $RELEASE
+	github_changelog_generator -t $GITHUB_TOKEN --future-release $BUILD_VERSION
 
 	git add -A CHANGELOG.md
 	git commit -m "Updated changelog at ${rev} [skip ci]"
@@ -34,7 +34,7 @@ echo "CHANGELOG_USER_EMAIL : $CHANGELOG_USER_EMAIL"
 echo "GITHUB_TOKEN         : ( length = ${#GITHUB_TOKEN} )"
 echo "TRAVIS_REPO_SLUG     : $TRAVIS_REPO_SLUG"
 echo "TRAVIS_PULL_REQUEST  : $TRAVIS_PULL_REQUEST"
-echo "RELEASE              : $RELEASE"
+echo "BUILD_VERSION        : $BUILD_VERSION"
 
 if [[ ! ${CHANGELOG_USER_NAME+x} ]]; then
 	echo "Variable 'CHANGELOG_USER_NAME' not set. Changelog not updated!"
@@ -56,7 +56,7 @@ if [[ ! ${TRAVIS_PULL_REQUEST+x} ]]; then
 	echo "Variable 'TRAVIS_PULL_REQUEST' not set. Changelog not updated!"
 	exit 1
 fi
-if [[ ! ${RELEASE+x} ]]; then
-	echo "Variable 'RELEASE' not set. Changelog not updated!"
+if [[ ! ${BUILD_VERSION+x} ]]; then
+	echo "Variable 'BUILD_VERSION' not set. Changelog not updated!"
 	exit 1
 fi

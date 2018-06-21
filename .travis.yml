@@ -22,7 +22,7 @@ deploy:
   skip_cleanup: true
   overwrite: true
   on:
-    condition: "$RELEASE" == "YES"
+    condition: $RELEASE == YES
 
 
 

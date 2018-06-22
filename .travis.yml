@@ -2,6 +2,8 @@ language: go
 
 go: 1.10.x
 
+if: tag IS blank
+
 before_script:
   - source ./.travis/version-generator.sh
   - source ./.travis/deploy-changelog.sh
